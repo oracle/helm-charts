@@ -4,7 +4,11 @@ This repository contains [Helm](https://helm.sh) charts for Oracle commercial
 products.
 
 ## Contributing
-See [CONTRIBUTING](./CONTRIBUTING.md) for details.
+
+This project welcomes contributions from everyone. Before submitting a pull
+request, please [review our contribution guide](./CONTRIBUTING.md) and discuss
+it with us by creating a new issue.
 
 ## Security
-See [SECURITY](./SECURITY.md) for details.
+Please review our [security guide](./SECURITY.md) for the responsible security
+vulnerability disclosure process.
