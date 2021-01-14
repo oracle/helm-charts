@@ -1,0 +1,30 @@
+# Copyright (c) 2021, Oracle Corporation and/or its affiliates.
+# Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+
+{{- if and .Values.weblogicSSLCertificateOverride.enabled .Values.weblogicSSLCertificateOverride.keystore.password }}
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ include "amc.getsecretsname" (dict "root" . "type" "weblogic-keystore") }}
+  namespace: {{ .Values.namespace }}
+  labels:
+    weblogic.domainUID: {{ template "amc.domainname" . }}
+type: Opaque
+data:
+  password: {{ .Values.weblogicSSLCertificateOverride.keystore.password | b64enc | quote }}
+{{- end }}
+
+---
+
+{{- if and .Values.weblogicSSLCertificateOverride.enabled .Values.weblogicSSLCertificateOverride.keystorealias.password }}
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ include "amc.getsecretsname" (dict "root" . "type" "weblogic-alias") }}
+  namespace: {{ .Values.namespace }}
+  labels:
+    weblogic.domainUID: {{ template "amc.domainname" . }}
+type: Opaque
+data:
+  password: {{ .Values.weblogicSSLCertificateOverride.keystorealias.password | b64enc | quote }}
+{{- end }}

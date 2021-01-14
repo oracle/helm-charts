@@ -1,0 +1,20 @@
+# Copyright (c) 2021, Oracle Corporation and/or its affiliates.
+# Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+
+{{- if .Values.nodePort.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "amc.domainname" . }}-managed-server-external
+  namespace: {{ .Values.namespace }}
+spec:
+  type: NodePort
+  selector:
+    weblogic.clusterName: {{ template "amc.clustername" . }}
+    weblogic.domainUID: {{ template "amc.domainname" . }}
+  ports:
+    - name: amc-service
+      port: 8002
+      targetPort: 8002
+      nodePort: {{ default "" .Values.nodePort.managedserver }}
+{{- end }}
