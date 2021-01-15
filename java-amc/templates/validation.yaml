@@ -1,0 +1,24 @@
+# Copyright (c) 2021, Oracle Corporation and/or its affiliates.
+# Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+
+{{- $action := include "amc.validatens" .  | required "Namespace to deploy AMC must be provided" }}
+{{- $action := include "amc.validateamcimage" .  | required "Container image repository or tag not configured" }}
+{{- $action := include "amc.validatedbtype" .  | required "Database Type should be either mysql or oracle" }}
+{{- $action := include "amc.validatedbport" .  | required "Port value for Database service must be numeric" }}
+{{- $action := include "amc.validatedbsettings" .  | required "Database setting configuration incomplete" }}
+{{- $action := include "amc.validatesslsetting" .  | required "WebLogic SSL Certificate configuration incomplete" }}
+{{- $action := include "amc.validatemailsetting" .  | required "Mail server configuration incomplete" }}
+{{- $action := include "amc.validateldapsetting" .  | required "LDAP server configuration incomplete" }}
+{{- $action := include "amc.validateldapport" .  | required "Port value for LDAP service must be numeric" }}
+{{- $action := include "amc.validatelbport" .  | required "Load Balancer port number is mandatory and should be numeric" }}
+{{- $action := include "amc.validateweblogicpassword" .  | required "The WebLogic password specified must be at least 8 alphanumeric characters with at least one number or special character" }}
+{{- $action := include "amc.validateweblogiccredentials" .  | required "Invalid  configuration for WebLogic Credentials" }}
+{{- $action := include "amc.validatedatasourcecredentials" .  | required "Invalid  configuration for Data Source Credentials" }}
+{{- $action := include "amc.validatemailservercredentials" .  | required "Invalid  configuration for MailServer Credentials" }}
+{{- $action := include "amc.validateldapcredentials" .  | required "Invalid  configuration for LDAP Credentials" }}
+{{- $action := include "amc.validatesslcredentials" .  | required "Invalid configuration for SSL Credentials" }}
+{{- $action := include "amc.validatereplicacount" .  | required "The replicaCount should be numeric and in range 2-10" }}
+{{- $action := include "amc.validatenodeportrange" .  | required "The values for node port should be numeric and in range 30000-32767" }}
+{{- $action := include "amc.validatesecrets" . | required "One or more secrets specified are not present in this namespace. ***Ignore this warning if executing --dry-run***" }}
+
+

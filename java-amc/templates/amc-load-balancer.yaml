@@ -1,0 +1,24 @@
+# Copyright (c) 2021, Oracle Corporation and/or its affiliates.
+# Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+
+{{- if .Values.loadBalancer.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "amc.domainname" . }}-lb-service
+  namespace: {{ .Values.namespace }}
+  annotations:
+    "helm.sh/resource-policy": keep
+{{- if .Values.loadBalancer.annotations }}
+{{ toYaml .Values.loadBalancer.annotations | indent 4 }}
+{{- end }}
+spec:
+  type: LoadBalancer
+  ports:
+  - name: https
+    port: {{ .Values.loadBalancer.port }}
+    targetPort: 8002
+  selector:
+    weblogic.clusterName: {{ template "amc.clustername" . }}
+    weblogic.domainUID: {{ template "amc.domainname" . }}
+{{- end }}

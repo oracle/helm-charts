@@ -1,0 +1,146 @@
+# Copyright (c) 2021, Oracle Corporation and/or its affiliates.
+# Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+
+topology:
+    Name: {{ include "amc.domainname" . | quote }}
+    AdminServerName: 'admin-server'
+    JTA:
+        TimeoutSeconds: 300
+    Cluster:
+        '{{ template "amc.clustername" . }}':
+            DynamicServers:
+                ServerTemplate: '{{ include "amc.clustername" . }}{{print "-template"}}'
+                ServerNamePrefix: 'managed-server'
+                DynamicClusterSize: '10'
+                MaxDynamicClusterSize: '10'
+                MinDynamicClusterSize: '2'
+                CalculatedListenPorts: false
+    Server:
+        'admin-server':
+            ListenPort: 7001
+            {{- include "amc.keystoresettings" . | indent 12 }}
+            SSL:
+                Enabled: false
+                {{- include "amc.sslsettings" . | indent 16 }}
+    ServerTemplate:
+        'amc-cluster-template':
+            Cluster: {{ include "amc.clustername" . | quote }}
+            ListenPort: 8001
+            {{- include "amc.keystoresettings" . | indent 12 }}
+            SSL:
+                Enabled: true
+                ListenPort: 8002
+                {{- include "amc.sslsettings" . | indent 16 }}
+{{- if .Values.ldap.enabled }}
+{{- $ldapsecret := include "amc.getsecretsname" (dict "root" . "type" "ldap") }}
+    SecurityConfiguration:
+        Realm:
+            myrealm:
+                Adjudicator:
+                    DefaultAdjudicator:
+                        DefaultAdjudicator:
+                AuthenticationProvider:
+                    DefaultAuthenticator:
+                        DefaultAuthenticator:
+                            ControlFlag: SUFFICIENT
+                    DefaultIdentityAsserter:
+                        DefaultIdentityAsserter:
+                    LDAP_Server:
+                        LDAPAuthenticator:
+                            UseRetrievedUserNameAsPrincipal: true
+                            Principal: {{ .Values.ldap.principal | quote }}
+                            UserBaseDn: {{ .Values.ldap.userbaseDN | quote }}
+                            AllUsersFilter: '(objectclass=person)'
+                            GroupBaseDN: {{ .Values.ldap.groupbaseDN | quote }}
+                            GroupFromNameFilter: '(&(cn=%g)(objectclass=groupOfNames))'
+                            AllGroupsFilter: '(objectclass=groupOfNames)'
+                            StaticGroupNameAttribute: 'cn'
+                            StaticGroupObjectClass: 'groupOfNames'
+                            StaticMemberDNAttribute: 'member'
+                            StaticGroupDNsfromMemberDNFilter: '(&(member=%M)(objectclass=groupOfNames))'
+                            ControlFlag: SUFFICIENT
+                            SSLEnabled: {{ .Values.ldap.enableSSL | default false }}
+                            Host: {{ .Values.ldap.host | quote }}
+                            Port: {{ .Values.ldap.port | default 389 }}
+                            CredentialEncrypted: '@@SECRET:{{ $ldapsecret }}:password@@'
+                Authorizer:
+                    XACMLAuthorizer:
+                        XACMLAuthorizer:
+                            PolicyDeploymentEnabled: true
+                CertPathProvider:
+                    WebLogicCertPathProvider:
+                        WebLogicCertPathProvider:
+                CredentialMapper:
+                    DefaultCredentialMapper:
+                        DefaultCredentialMapper:
+                PasswordValidator:
+                    SystemPasswordValidator:
+                        SystemPasswordValidator:
+                RoleMapper:
+                    XACMLRoleMapper:
+                        XACMLRoleMapper:
+{{- end }}
+{{- $datasourcesecret := include "amc.getsecretsname" (dict "root" . "type" "datasource") }}
+resources:
+    JDBCSystemResource:
+        'amc-oracle':
+            {{- include "amc.targetcluster" (dict "dbresource" "oracle" "Values" .Values) | indent 12 }}
+            JdbcResource:
+                DatasourceType: GENERIC
+                JDBCConnectionPoolParams:
+                    StatementCacheSize: 10
+                    InitialCapacity: 0
+                    MinCapacity: 0
+                    TestTableName: SQL ISVALID
+                    StatementCacheType: LRU
+                    MaxCapacity: 50
+                JDBCDataSourceParams:
+                    GlobalTransactionsProtocol: 'None'
+                    {{- include "amc.oraclejndi" . | indent 20 }}
+                JDBCDriverParams:
+                    {{- include "amc.targeturl" (dict "dbresource" "oracle" "Values" .Values) | indent 20 }}
+                    PasswordEncrypted: '@@SECRET:{{ $datasourcesecret }}:password@@'
+                    DriverName: oracle.jdbc.OracleDriver
+                    Properties:
+                        user:
+                            Value: '@@SECRET:{{ $datasourcesecret }}:username@@'
+                        useUnicode:
+                            Value: yes
+                        characterEncoding:
+                            Value: 'UTF-8'
+        'amc-mysql':
+            {{- include "amc.targetcluster" (dict "dbresource" "mysql" "Values" .Values) | indent 12 }}
+            JdbcResource:
+                DatasourceType: GENERIC
+                JDBCConnectionPoolParams:
+                    StatementCacheSize: 10
+                    InitialCapacity: 0
+                    MinCapacity: 0
+                    TestTableName: SQL SELECT 1
+                    StatementCacheType: LRU
+                    MaxCapacity: 50
+                JDBCDataSourceParams:
+                    GlobalTransactionsProtocol: 'None'
+                    JNDIName: amc2/db/mysql
+                JDBCDriverParams:
+                    {{- include "amc.targeturl" (dict "dbresource" "mysql" "Values" .Values) | indent 20 }}
+                    PasswordEncrypted: '@@SECRET:{{ $datasourcesecret }}:password@@'
+                    {{- include "amc.jdbcdriver" . | indent 20 }}
+                    Properties:
+                        user:
+                            Value: '@@SECRET:{{ $datasourcesecret }}:username@@'
+                        useUnicode:
+                            Value: yes
+                        characterEncoding:
+                            Value: 'UTF-8'
+{{- if .Values.mailServer.enabled }}
+{{- $mailserversecret := include "amc.getsecretsname" (dict "root" . "type" "mailserver") }}
+    MailSession:
+        AMC_MailSession:
+            SessionUsername: '@@SECRET:{{ $mailserversecret }}:username@@'
+            SessionPasswordEncrypted: '@@SECRET:{{ $mailserversecret }}:password@@'
+            Properties:
+                {{- toYaml .Values.mailServer.properties | nindent 16 }}
+            Target: {{ include "amc.clustername" . | quote}}
+            JNDIName: amc2/mail
+{{- end }}

@@ -1,0 +1,110 @@
+# Copyright (c) 2021, Oracle Corporation and/or its affiliates.
+# Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+
+apiVersion: "weblogic.oracle/v8"
+
+kind: Domain
+
+metadata:
+  name: {{ template "amc.domainname" . }}
+  namespace: {{ .Values.namespace }}
+  labels:
+    weblogic.resourceVersion: domain-v2
+    weblogic.domainUID: {{ template "amc.domainname" . }}
+
+spec:
+  # Set to 'FromModel' to indicate 'Model in Image'.
+  domainHomeSourceType: FromModel
+
+  # The WebLogic Domain Home, this must be a location within
+  # the image for 'Model in Image' domains.
+  domainHome: /u01/domains/{{ template "amc.domainname" . }}
+
+  # The WebLogic Server Docker image that the Operator uses to start the domain
+  image: "{{ .Values.image.repo }}:{{ .Values.image.tag }}"
+
+  # Defaults to "Always" if image tag (version) is ':latest'
+  imagePullPolicy: {{ .Values.image.pullPolicy }}
+  
+  # Identify which Secret contains the credentials for pulling an image
+  {{- include "amc.imagepullsecret" . | indent 2 }}
+
+  # Identify which Secret contains the WebLogic Admin credentials,
+  # the secret must contain 'username' and 'password' fields.
+  webLogicCredentialsSecret: 
+    name: {{ include "amc.getsecretsname" (dict "root" . "type" "weblogic") }}
+
+  # Whether to include the WebLogic server stdout in the pod's stdout, default is true
+  includeServerOutInPodLog: true
+
+  # Whether to enable overriding your log file location, see also 'logHome'
+  #logHomeEnabled: false
+  
+  # The location for domain log, server logs, server out, and Node Manager log files
+  # see also 'logHomeEnabled', 'volumes', and 'volumeMounts'.
+  #logHome: /shared/logs/sample-domain1
+  
+  # Set which WebLogic servers the Operator will start
+  # - "NEVER" will not start any server in the domain
+  # - "ADMIN_ONLY" will start up only the administration server (no managed servers will be started)
+  # - "IF_NEEDED" will start all non-clustered servers, including the administration server, and clustered servers up to their replica count.
+  serverStartPolicy: "IF_NEEDED"
+
+  serverStartState: "RUNNING"
+
+
+  # Change the introspectVersion to force the introspector job to rerun
+  # and apply any new model configuration, to also force a subsequent
+  # roll of your domain's WebLogic pods.
+  introspectVersion: {{ include "amc.hashforintrospection" . }}
+
+  restartVersion: {{ default 1 .Values.restartVersion | quote }}
+
+  # The desired behavior for starting the domain's administration server.
+  adminServer:
+    # The serverStartState legal values are "RUNNING" or "ADMIN"
+    # "RUNNING" means the listed server will be started up to "RUNNING" mode
+    # "ADMIN" means the listed server will be start up to "ADMIN" mode
+    serverStartState: "RUNNING"
+    {{- include "amc.nodeportadmin" . | indent 4 }}
+    serverPod:
+      env:
+        {{- include "amc.serverenv" (dict "root" . "args" .Values.extraEnv.adminServer) | indent 8 }}
+      resources:
+        {{- toYaml .Values.resources.adminServer | nindent 8 }}
+      {{- include "amc.volumemounts" . | indent 6 }}
+      {{- include "amc.volumes" . | indent 6 }}
+
+  # The desired behavior for starting a specific cluster's member servers
+  clusters:
+  - clusterName: {{ template "amc.clustername" . }}
+    serverStartState: "RUNNING"
+    maxUnavailable: {{ template "amc.unavailablecount" . }}
+    replicas: {{ default 2 .Values.replicaCount }}
+    
+    # Enabling precreateService creates DNS entries for all managed servers beforehand.
+    # This is a workaround for the excess warning logs about failed DNS resolution observed in WLS 14c
+    serverService:
+      precreateService: true
+
+    serverPod:
+      env:
+        {{- include "amc.serverenv" (dict "root" . "args" .Values.extraEnv.managedServer) | indent 8 }}
+      resources:
+        {{- toYaml .Values.resources.managedServer | nindent 8 }}
+      {{- include "amc.volumemounts" . | indent 6 }}
+      {{- include "amc.volumes" . | indent 6 }}
+
+
+  configuration:
+    model:
+      domainType: "WLS"
+
+      configMap: {{ template "amc.domainname" . }}-wdt-config-map
+
+      # All 'FromModel' domains require a runtimeEncryptionSecret with a 'password' field
+      runtimeEncryptionSecret: {{ template "amc.domainname" . }}-runtime-encryption-secret
+
+    # Secrets that are referenced by model yaml macros
+    secrets:
+    {{- include "amc.configsecrets" . | indent 4 }}

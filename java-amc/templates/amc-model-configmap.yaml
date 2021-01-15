@@ -1,0 +1,13 @@
+# Copyright (c) 2021, Oracle Corporation and/or its affiliates.
+# Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "amc.domainname" . }}-wdt-config-map
+  namespace: {{ .Values.namespace }}
+  labels:
+    weblogic.domainUID: {{ template "amc.domainname" . }}
+data:
+  amc-model.yaml: |-
+    {{ tpl (.Files.Get "model/amc-model.yaml") . | nindent 4 }}

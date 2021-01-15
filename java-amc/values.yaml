@@ -1,0 +1,229 @@
+# Copyright (c) 2021 Oracle Corporation and/or its affiliates.
+# Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+
+## Configuration for AMC deployment ##
+
+## Specify the namespace for deploying the AMC domain resources.
+## The namespace specified must be created manually before installing the chart 
+namespace: amc
+
+## Provide a WebLogic domain name for the deployment. The same would be used as WebLogic domain UID too.
+## Defaults to "amc-domain"
+domain: amc-domain
+
+## Set the replicaCount for scaling
+## TODO: Guidance for replica count to be provided
+replicaCount: 2
+
+## Set this to true to enable Blue-Green deployments during AMC version upgrades
+isVersionUpgrade: false
+
+## Any internal change in configuration automatically triggers a restart of servers
+## In case, a change is done externally(like secrets) uncomment the below
+## line and increment the value to force a restart 
+#restartVersion: 1
+
+## Customize\add environment variables for the WebLogic server pods
+extraEnv:
+  adminServer:
+    JAVA_OPTIONS: "-Xmx2g -Xms512m"
+    USER_MEM_ARGS: ""
+  managedServer:
+    JAVA_OPTIONS: "-Xmx2g -Xms512m"
+    USER_MEM_ARGS: ""
+
+## If needed, customize the resources for admin and managed server pods
+resources:
+  adminServer:
+    limits:
+      memory: "3Gi"
+    requests:
+      memory: "1Gi"
+  managedServer:
+    limits:
+      memory: "5Gi"
+    requests:
+      memory: "1Gi"
+
+image:
+  ## Docker image repository for AMC
+  repo: 
+
+  ## Docker image tag for AMC
+  tag: 
+
+  ## Specify an imagePullPolicy
+  pullPolicy: IfNotPresent
+
+  ## Optionally specify an array of imagePullSecrets
+  ## Secrets must be manually created in the namespace
+  ## Ref https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+  #pullSecrets:
+  #  - amcregistrysecret
+
+## Choose from below options to set the WebLogic Credentials
+## 
+## 1) Create the Kubernetes secret in the same namespace before deploying the chart with
+## 'username' and 'password' as keys. Provide the name of this secret in the secretsName field.
+## Leave the username and password fields commented\undefined.
+##
+## 2) Provide the credentials in plain text against the username and password fields.
+## A Kubernetes Secret would be auto generated. If the secretsName field is not specified,
+## it would default to <domain-name>-weblogic-credentials
+weblogicCredentials:
+  secretsName: 
+  ## Uncomment the following and specify the credentials to auto-generate the secret
+  #username: weblogic
+  #password: welcome1!
+
+## Override with a custom certificate to be used at WebLogic server
+weblogicSSLCertificateOverride:
+  enabled: false
+
+  ## Before deploying the chart, create a Kubernetes ConfigMap from the keystore
+  ## file in the same namespace. Provide the name of this ConfigMap here.
+  configmapName: 
+  ## Choose from below options to set the keystore and keystore alias credentials
+  ## 
+  ## 1) Create the Kubernetes secret in the same namespace before deploying the chart with
+  ## 'password' as key. Provide the name of this secret in the secretsName field.
+  ## Leave the password field commented\undefined.
+  ##
+  ## 2) Provide the credentials in plain text against the password field.
+  ## A Kubernetes Secret would be auto generated. If the secretsName field is not specified,
+  ## it would default to <domain-name>-"weblogic-keystore\weblogic-keystorealias"-credentials
+  keystore:
+    ## Name of the keystore file used to create the config map
+    filename: 
+    secretsName:
+    ## Uncomment the following and specify the credentials to auto-generate the secret
+    #password: 
+  keystorealias:
+    ## Alias for the certificate
+    alias: 
+    secretsName:
+    ## Uncomment the following and specify the credentials to auto-generate the secret
+    #password: 
+    
+## The Database deployment for AMC is outside the scope of this chart.
+## Based on the Database setup, update the configuration below for data source connection
+database:
+  ## Specify "mysql" or "oracle" for Database type depending on your setup
+  type: mysql
+
+  ## Uncomment the below if Oracle 11g is used as Database
+  #isOracle11 : true
+
+  ## use_cj_driver_mysql8 flag configures the usage of "com.mysql.cj.jdbc.Driver" in WebLogic server 
+  ## Uncomment to enable the same if both these conditions are met
+  ## - AMC Docker image has WebLogic Server 12.2.1.4 or above
+  ## - MySQL 8 is used as Database
+  #use_cj_driver_mysql8: true
+
+  ## Provide the Database name created for AMC to make use of
+  name: amc2
+
+  ## Choose from below options to set the Data Source Credentials
+  ## 
+  ## 1) Create the Kubernetes secret in the same namespace before deploying the chart with
+  ## 'username' and 'password' as keys. Provide the name of this secret in the secretsName field.
+  ## Leave the username and password fields commented\undefined.
+  ##
+  ## 2) Provide the credentials in plain text against the username and password fields.
+  ## A Kubernetes Secret would be auto generated. If the secretsName field is not specified,
+  ## it would default to <domain-name>-datasource-credentials
+  credentials:
+    secretsName: 
+    ## Uncomment the following and specify the credentials to auto-generate the secret
+    #username: amc2
+    #password: amc2
+
+  ## Specify the host name of the Database service
+  host: 
+
+  ## Specify the port number of the Database service
+  port: 3306
+
+
+nodePort:
+  ## Set to true to expose Node Ports for Admin and Managed Servers
+  enabled: false
+
+  ## If nodePort is enabled, either specify the port in the range (30000-32767)
+  ## or leave it undefined for random assignment
+  adminserver: 
+  managedserver: 
+
+loadBalancer:
+  ## Set to true to create a Load Balancer service
+  enabled: true
+
+  ## If Load Balancer is enabled, provide a port number
+  port: 8002
+
+  ## If you want to specify annotations for the Load Balancer service,
+  ## add them in the following lines and remove the curly braces
+  annotations: {}
+    #service.beta.kubernetes.io/oci-load-balancer-internal: "true"
+
+## Configure mail server settings to be used by AMC
+mailServer:
+  ## Set to true to configure mail server settings as part of deployment
+  enabled: false
+
+  ## Set the properties for mail server.
+  ## Sample values below are for SMTP host
+  properties:
+    mail.smtp.host: smtp.example.com
+    mail.transport.protocol: smtp
+    mail.smtp.auth: true
+    mail.smtp.ssl.enable: true
+    mail.debug: false
+
+  ## Choose from below options to set the Mail Server Credentials
+  ## 
+  ## 1) Create the Kubernetes secret in the same namespace before deploying the chart with
+  ## 'username' and 'password' as keys. Provide the name of this secret in the secretsName field.
+  ## Leave the username and password fields commented\undefined.
+  ##
+  ## 2) Provide the credentials in plain text against the username and password fields.
+  ## A Kubernetes Secret would be auto generated. If the secretsName field is not specified,
+  ## it would default to <domain-name>-mailserver-credentials
+  credentials:
+    secretsName: 
+    ## Uncomment the following and specify the credentials to auto-generate the secret
+    #username: amc2
+    #password: amc2
+
+## Configure the LDAP security provider settings to be used by AMC
+ldap:
+  ## Set to true to configure LDAP settings as part of deployment
+  enabled: false
+
+  ## Choose from below options to set the LDAP Server Credentials
+  ## 
+  ## 1) Create the Kubernetes secret in the same namespace before deploying the chart with
+  ## 'password' as key. Provide the name of this secret in the secretsName field.
+  ## Leave the password field commented\undefined.
+  ##
+  ## 2) Provide the credential in plain text against the password field.
+  ## A Kubernetes Secret would be auto generated. If the secretsName field is not specified,
+  ## it would default to <domain-name>-ldap-credentials
+  credentials:
+    secretsName: 
+    ## Uncomment the following and specify the credentials to auto-generate the secret
+    #password: amc2
+
+  ## hostname and port of the LDAP server. Port defaults to 389 if not specified.
+  host: ldapserver.example.com
+  port: 389
+
+  ## Specify if SSL should be used when connecting to LDAP server
+  enableSSL: false
+
+  ## Note that the below are sample values. You need to edit these values based on
+  ## the values configured in your LDAP server
+  principal: cn=amc,dc=example,dc=com
+  userbaseDN: ou=users,ou=amc,dc=example,dc=com
+  groupbaseDN: ou=groups,ou=amc,dc=example,dc=com
+
