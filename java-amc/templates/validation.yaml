@@ -2,7 +2,7 @@
 # Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
 
 {{- $action := include "amc.validatens" .  | required "Namespace to deploy AMC must be provided" }}
-{{- $action := include "amc.validateamcimage" .  | required "Docker image repository or tag not configured" }}
+{{- $action := include "amc.validateamcimage" .  | required "Container image repository or tag not configured" }}
 {{- $action := include "amc.validatedbtype" .  | required "Database Type should be either mysql or oracle" }}
 {{- $action := include "amc.validatedbport" .  | required "Port value for Database service must be numeric" }}
 {{- $action := include "amc.validatedbsettings" .  | required "Database setting configuration incomplete" }}
