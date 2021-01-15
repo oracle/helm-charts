@@ -3,12 +3,19 @@
 This repository contains [Helm](https://helm.sh) charts for Oracle commercial
 products.
 
+## Available charts
+
+* Java [Advanced Management Console](./java-amc) (AMC)
+
 ## Contributing
 
-This project welcomes contributions from everyone. Before submitting a pull
-request, please [review our contribution guide](./CONTRIBUTING.md) and discuss
-it with us by creating a new issue.
+This project welcomes contributions from the community. Before submitting a pull
+request, please [review our contribution guide](./CONTRIBUTING.md) which includes
+information on how to responsibly report a security vulnerability to Oracle.
 
-## Security
-Please review our [security guide](./SECURITY.md) for the responsible security
-vulnerability disclosure process.
+## License
+
+Copyright (c) 2021 Oracle and/or its affiliates.
+
+Released under the Universal Permissive License v1.0 as shown at
+<https://oss.oracle.com/licenses/upl/>.
