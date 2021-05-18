@@ -35,7 +35,7 @@ The chart uses the Oracle SOA Suite Docker image from the Oracle Container Regis
 
 You must accept the terms of use for this image before using the chart, or it will fail to pull the image from registry.
 
-- At [https://container-registry.oracle.com/pls/apex/f?p=113:10:18395320492442:::RP,10::](https://container-registry.oracle.com/pls/apex/f?p=113:10:18395320492442:::RP,10::), search for 'SOA'.
+- At [https://container-registry.oracle.com](https://container-registry.oracle.com), search for 'SOA'.
 - Click **soasuite**.
 - Click to accept the License terms and condition on the right.
 - Fill in your information (if you haven't already).

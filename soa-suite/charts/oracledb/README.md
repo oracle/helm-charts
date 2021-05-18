@@ -25,7 +25,7 @@ You may provision the database supporting the Oracle SOA suite domain schemas se
 
 If you intend on deploying the database within the kubernetes cluster (optional; not for production), you must agree to the terms of the Oracle database Docker image:
 
-- At [https://container-registry.oracle.com/pls/apex/f?p=113:10:18395320492442:::RP,10::](https://container-registry.oracle.com/pls/apex/f?p=113:10:18395320492442:::RP,10::), search for 'database'.
+- At [https://container-registry.oracle.com](https://container-registry.oracle.com), search for 'database'.
 - Click **Enterprise**.
 - Click to accept the License terms and condition on the right.
 - Fill in your information (if you haven't already).
