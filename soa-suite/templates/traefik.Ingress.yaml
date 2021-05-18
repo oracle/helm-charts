@@ -1,0 +1,132 @@
+# Copyright (c) 2020, 2021, Oracle and/or its affiliates.
+# Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+{{- if and (eq .Values.ingress.type "traefik") (eq .Values.kubernetesVersion "1.19") }}
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: {{ .Values.domain.domainName }}-traefik
+  labels:
+    weblogic.resourceVersion: domain-v2
+  annotations:
+    kubernetes.io/ingress.class: traefik
+{{- if .Values.ingress.tls }}
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    traefik.ingress.kubernetes.io/router.tls: "true"
+    traefik.ingress.kubernetes.io/router.middlewares: soans-wls-proxy-ssl@kubernetescrd
+{{- end }}
+spec:
+  rules:
+  - host: '{{ .Values.ingress.hostname }}'
+    http:
+      paths:
+      - path: /console
+        pathType: Prefix
+        backend:
+          service:
+            name: '{{ .Values.domain.domainName }}-{{ .Values.domain.admin.name | lower | replace "_" "-" }}'
+            port:
+              number: {{ .Values.domain.admin.listenPort }}
+      - path: /em
+        pathType: Prefix
+        backend:
+          service:
+            name: '{{ .Values.domain.domainName }}-{{ .Values.domain.admin.name | lower | replace "_" "-" }}'
+            port: 
+              number: {{ .Values.domain.admin.listenPort }}
+      - path: /weblogic/ready
+        pathType: Prefix
+        backend:
+          service:
+            name: '{{ .Values.domain.domainName }}-{{ .Values.domain.admin.name | lower | replace "_" "-" }}'
+            port:
+              number: {{ .Values.domain.admin.listenPort }}
+      - path: /
+        pathType: Prefix
+        backend:
+        {{- if eq .Values.domain.type "osb" }}
+          service:
+            name: '{{ .Values.domain.domainName }}-cluster-{{ .Values.domain.osbCluster.name | lower | replace "_" "-" }}'
+            port:
+              number: {{ .Values.domain.osbCluster.managedServers.listenPort  }}
+        {{- else }}
+          service:
+            name: '{{ .Values.domain.domainName }}-cluster-{{ .Values.domain.soaCluster.name | lower | replace "_" "-" }}'
+            port:
+              number: {{ .Values.domain.soaCluster.managedServers.listenPort  }}
+        {{- end }}
+{{- if or (eq .Values.domain.type "soa") (eq .Values.domain.type "soaosb") (eq .Values.domain.type "soaess") (eq .Values.domain.type "soaessosb")}}
+      - path: /soa-infra
+        pathType: Prefix
+        backend:
+          service:
+            name: '{{ .Values.domain.domainName }}-cluster-{{ .Values.domain.soaCluster.name | lower | replace "_" "-" }}'
+            port:
+              number: {{ .Values.domain.soaCluster.managedServers.listenPort  }}
+      - path: /soa/composer
+        pathType: Prefix
+        backend:
+          service:
+            name: '{{ .Values.domain.domainName }}-cluster-{{ .Values.domain.soaCluster.name | lower | replace "_" "-" }}'
+            port:
+              number: {{ .Values.domain.soaCluster.managedServers.listenPort  }}
+      - path: /integration/worklistapp
+        pathType: Prefix
+        backend:
+          service:
+            name: '{{ .Values.domain.domainName }}-cluster-{{ .Values.domain.soaCluster.name | lower | replace "_" "-" }}'
+            port: 
+              number: {{ .Values.domain.soaCluster.managedServers.listenPort }}
+{{- end }}
+{{- if or (eq .Values.domain.type "osb") (eq .Values.domain.type "soaosb") (eq .Values.domain.type "soaessosb") }}
+      - path: /servicebus
+        pathType: Prefix
+        backend:
+          service:
+            name: '{{ .Values.domain.domainName }}-{{ .Values.domain.admin.name | lower | replace "_" "-" }}'
+            port:
+              number: {{ .Values.domain.admin.listenPort }}
+      - path: /lwpfconsole
+        pathType: Prefix
+        backend:
+          service:
+            name: '{{ .Values.domain.domainName }}-{{ .Values.domain.admin.name | lower | replace "_" "-" }}'
+            port:
+              number: {{ .Values.domain.admin.listenPort }}
+      - path: /xbusrouting
+        pathType: Prefix
+        backend:
+          service:
+            name: '{{ .Values.domain.domainName }}-{{ .Values.domain.admin.name | lower | replace "_" "-" }}'
+            port:
+              number: {{ .Values.domain.admin.listenPort }}
+      - path: /xbustransform
+        pathType: Prefix
+        backend:
+          service:
+            name: '{{ .Values.domain.domainName }}-{{ .Values.domain.admin.name | lower | replace "_" "-" }}'
+            port:
+              number: {{ .Values.domain.admin.listenPort }}
+{{- end }}
+{{- if or (eq .Values.domain.type "soaess") (eq .Values.domain.type "soaessosb")}}
+      - path: /ess
+        pathType: Prefix
+        backend:
+          service:
+            name: '{{ .Values.domain.domainName }}-cluster-{{ .Values.domain.soaCluster.name | lower | replace "_" "-" }}'
+            port:
+              number: {{ .Values.domain.soaCluster.managedServers.listenPort  }}
+      - path: /EssHealthCheck
+        pathType: Prefix
+        backend:
+          service:
+            name: '{{ .Values.domain.domainName }}-cluster-{{ .Values.domain.soaCluster.name | lower | replace "_" "-" }}'
+            port: 
+              number: {{ .Values.domain.soaCluster.managedServers.listenPort  }}
+{{- end }}
+{{- if .Values.ingress.tls }}
+  tls:
+  - hosts:
+    - '{{ .Values.traefik.hostname }}'
+    secretName: {{ .Values.domain.domainName }}-tls-cert
+{{- end }}
+{{- end }}

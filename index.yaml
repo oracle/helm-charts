@@ -1,0 +1,29 @@
+apiVersion: v1
+entries:
+  java-amc:
+  - apiVersion: v2
+    appVersion: "2.20"
+    created: "2021-05-18T16:35:01.651094-07:00"
+    description: A Helm chart for Containerized Advanced Management Console
+    digest: 76a04c5832bb718e1dd1f91762cd484033821f21646861b771e323735101eb5b
+    name: java-amc
+    urls:
+    - charts/java-amc-1.0.0.tgz
+    version: 1.0.0
+  soa-suite:
+  - apiVersion: v2
+    appVersion: 12.2.1.4
+    created: "2021-05-18T16:35:01.65304-07:00"
+    dependencies:
+    - condition: oracledb.provision
+      name: oracledb
+      repository: ""
+      version: 0.1.0
+    description: A Helm chart for Kubernetes
+    digest: d6ab090398db92398523e134c2fc9369e71d8bd5ab032c30c54414fc80fc422f
+    name: soa-suite
+    type: application
+    urls:
+    - charts/soa-suite-0.1.0.tgz
+    version: 0.1.0
+generated: "2021-05-18T16:35:01.649818-07:00"
