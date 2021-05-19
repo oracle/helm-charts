@@ -1,0 +1,6 @@
+apiVersion: v2
+appVersion: 12.2.0.1-slim
+description: A Helm chart for Kubernetes
+name: oracledb
+type: application
+version: 0.1.0

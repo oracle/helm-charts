@@ -1,0 +1,197 @@
+# Copyright (c) 2020, 2021, Oracle and/or its affiliates.
+# Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
+#
+# This is an example of how to define a Domain resource.
+#
+{{- if .Values.domain.enabled }}
+---
+apiVersion: "weblogic.oracle/v8"
+kind: Domain
+metadata:
+  name: {{ .Values.domain.domainName }}
+  labels:
+    weblogic.domainUID: {{ .Values.domain.domainName }}
+spec:
+  # The WebLogic Domain Home
+  domainHome: "{{ .Values.domain.rootDir }}/domains/{{ .Values.domain.domainName }}"
+
+  # The domain home source type
+  # Set to PersistentVolume for domain-in-pv, Image for domain-in-image, or FromModel for model-in-image
+  domainHomeSourceType: PersistentVolume
+
+  # The WebLogic Server Docker image that the Operator uses to start the domain
+  image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+
+  # imagePullPolicy defaults to "Always" if image version is :latest
+  imagePullPolicy: {{ .Values.image.pullPolicy }}
+
+  # Identify which Secret contains the credentials for pulling an image
+  {{- with .Values.imagePullSecrets }}
+  imagePullSecrets:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+
+  # Identify which Secret contains the WebLogic Admin credentials (note that there is an example of
+  # how to create that Secret at the end of this file)
+  webLogicCredentialsSecret: 
+    {{- if .Values.domain.credentials.secretName }}
+    name: {{ .Values.domain.credentials.secretName }}
+    {{- else }}
+    name: {{ .Values.domain.domainName }}-domain-credentials
+    {{- end }}
+
+  # Whether to include the server out file into the pod's stdout, default is true
+  includeServerOutInPodLog: {{ .Values.domain.includeServerOutInPodLog }}
+
+  # Whether to enable log home
+  logHomeEnabled: {{ .Values.domain.logHomeEnabled }}
+
+  # Whether to write HTTP access log file to log home
+  httpAccessLogInLogHome: {{ .Values.domain.httpAccessLogInLogHome }}
+
+  # The in-pod location for domain log, server logs, server out, introspector out, and Node Manager log files
+  logHome: "{{ .Values.domain.logHome }}/{{ .Values.domain.domainName }}"
+  # An (optional) in-pod location for data storage of default and custom file stores.
+  # If not specified or the value is either not set or empty (e.g. dataHome: "") then the
+  # data storage directories are determined from the WebLogic domain home configuration.
+  dataHome: ""
+
+  # serverStartPolicy legal values are "NEVER", "IF_NEEDED", or "ADMIN_ONLY"
+  # This determines which WebLogic Servers the Operator will start up when it discovers this Domain
+  # - "NEVER" will not start any server in the domain
+  # - "ADMIN_ONLY" will start up only the administration server (no managed servers will be started)
+  # - "IF_NEEDED" will start all non-clustered servers, including the administration server and clustered servers up to the replica count
+  serverStartPolicy: {{ .Values.domain.serverStartPolicy }}
+
+  serverPod:
+    # an (optional) list of environment variable to be set on the servers
+    env:
+      - name: JAVA_OPTIONS
+        value: {{ .Values.domain.javaOptions }}
+      - name: USER_MEM_ARGS
+        value: "-Djava.security.egd=file:/dev/./urandom -Xms256m -Xmx1024m "
+      # {{- with .Values.domain.serverPodResources }}
+      # # %OPTIONAL_SERVERPOD_RESOURCES%
+      # {{- end}}
+
+    volumes:
+      - name: weblogic-domain-storage-volume
+        persistentVolumeClaim:
+          claimName: {{ .Values.domain.domainName }}-domain-pvc
+    volumeMounts:
+      - mountPath: {{ .Values.domain.rootDir }}
+        name: weblogic-domain-storage-volume
+  # adminServer is used to configure the desired behavior for starting the administration server.
+  adminServer:
+    # serverStartState legal values are "RUNNING" or "ADMIN"
+    # "RUNNING" means the listed server will be started up to "RUNNING" mode
+    # "ADMIN" means the listed server will be start up to "ADMIN" mode
+    serverStartState: "RUNNING"
+    {{- if or (.Values.domain.t3Channel.exposed) (.Values.domain.admin.exposeNodePort) }}
+    adminService:
+      channels:
+        {{- if .Values.domain.admin.exposeNodePort }}
+        # The Admin Server's NodePort
+        - channelName: default
+          nodePort: {{ .Values.domain.admin.nodePort }}
+        {{- end }}
+        {{- if .Values.domain.t3Channel.exposed }}
+        # Uncomment to export the T3Channel as a service
+        - channelName: T3Channel
+          nodePort: {{ .Values.domain.t3Channel.port }}
+        {{- end }}
+    {{- end }}
+    serverPod:
+      # an (optional) list of environment variable to be set on the admin servers
+      env:
+      - name: USER_MEM_ARGS
+        value: "-Djava.security.egd=file:/dev/./urandom -Xms512m -Xmx1024m "
+      initContainers: 
+      - name: wait-for-domain-created
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+        command: ["sh", "-c", "while [[ ! -f \"{{ .Values.domain.rootDir }}/domains/{{ .Values.domain.domainName }}/domainmarker\" ]]; do echo 'waiting for domain marker' && sleep 5; done"]
+        volumeMounts:
+        - name: weblogic-domain-storage-volume
+          mountPath: {{ .Values.domain.rootDir }}
+  # clusters is used to configure the desired behavior for starting member servers of a cluster.  
+  # If you use this entry, then the rules will be applied to ALL servers that are members of the named clusters.
+  clusters:
+  {{ if or (eq .Values.domain.type "soa") (eq .Values.domain.type "soaosb") (eq .Values.domain.type "soaess") (eq .Values.domain.type "soaessosb") }}
+  - clusterName: {{ .Values.domain.soaCluster.name }}
+    # IF SOA domain this is added
+    serverService:
+      precreateService: true
+    # end
+    serverStartState: "RUNNING"
+    serverPod:
+      env:
+      # This parameter can be used to pass in new system properties, use the space delimiter to append multiple values.
+      # Do not change the below value, only append new values to it.
+      {{- if or (eq .Values.domain.type "soa") (eq .Values.domain.type "soaess") }}
+      - name: K8S_REFCONF_OVERRIDES
+        value: "-Doracle.domain.tracking.resiliency.MemoryMetricEnabled=false "
+      {{- end }}
+      {{- if or (eq .Values.domain.type "soaosb") (eq .Values.domain.type "soaessosb") }}
+      - name: K8S_REFCONF_OVERRIDES
+        value: "-Doracle.sb.tracking.resiliency.MemoryMetricEnabled=false -Doracle.domain.tracking.resiliency.MemoryMetricEnabled=false "
+      {{- end }}
+      # Instructs Kubernetes scheduler to prefer nodes for new cluster members where there are not
+      # already members of the same cluster.
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: "weblogic.clusterName"
+                      operator: In
+                      values:
+                        - $(CLUSTER_NAME)
+                topologyKey: "kubernetes.io/hostname"
+    # The number of managed servers to start for unlisted clusters
+    replicas: {{ .Values.domain.soaCluster.managedServers.count }}
+  {{- end }}
+  {{ if or (eq .Values.domain.type "osb") (eq .Values.domain.type "soaosb") (eq .Values.domain.type "soaessosb") }}
+  - clusterName: {{ .Values.domain.osbCluster.name }}
+    # IF SOA domain this is added
+    serverService:
+      precreateService: true
+    # end
+    serverStartState: "RUNNING"
+    serverPod:
+      env:
+      # This parameter can be used to pass in new system properties, use the space delimiter to append multiple values.
+      # Do not change the below value, only append new values to it.
+      {{- if eq .Values.domain.type "osb" }}
+      - name: K8S_REFCONF_OVERRIDES
+        value: "-Doracle.sb.tracking.resiliency.MemoryMetricEnabled=false"
+      {{- end }}
+      {{- if or (eq .Values.domain.type "soaosb") (eq .Values.domain.type "soaessosb") }}
+      - name: K8S_REFCONF_OVERRIDES
+        value: "-Doracle.sb.tracking.resiliency.MemoryMetricEnabled=false -Doracle.domain.tracking.resiliency.MemoryMetricEnabled=false "
+      {{- end }}
+      # Instructs Kubernetes scheduler to prefer nodes for new cluster members where there are not
+      # already members of the same cluster.
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: "weblogic.clusterName"
+                      operator: In
+                      values:
+                        - $(CLUSTER_NAME)
+                topologyKey: "kubernetes.io/hostname"
+    # The number of managed servers to start for unlisted clusters
+    replicas: {{ .Values.domain.osbCluster.managedServers.count }}
+  {{- end }}
+
+  # # Istio
+  # %ISTIO_PREFIX%configuration:
+  # %ISTIO_PREFIX%  istio:
+  # %ISTIO_PREFIX%    enabled: %ISTIO_ENABLED%
+  # %ISTIO_PREFIX%    readinessPort: %ISTIO_READINESS_PORT%
+{{- end }}
