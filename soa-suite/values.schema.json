@@ -365,8 +365,8 @@
                     },
                     "password": {
                       "type": ["string"],
-                      "pattern": "^[a-zA-Z0-9-_#!%]{16,30}$",
-                      "description": "The domain password must contain at least 1 uppercase and 1 number, and 1 special and be at least 16 to 30 characters long."
+                      "pattern": "^[a-zA-Z0-9-_#]{9,30}$",
+                      "description": "The domain password must contain at least 2 uppercase, 2 lowercase, 2 numbers, and 2 special and be at least 9 to 30 characters long."
                     }
                   },
                   "dependencies": {
@@ -426,8 +426,9 @@
                 },
                 "password": {
                   "type": ["string"],
-                  "pattern": "^[a-zA-Z0-9-_#!%]{16,30}$"
-                }
+                  "pattern": "^[a-zA-Z0-9-_#]{9,30}$",
+                  "description": "The domain password must contain at least 2 uppercase, 2 lowercase, 2 numbers, and 2 special and be at least 9 to 30 characters long."
+            }
               },
               "dependencies": {
                 "username": { "required": ["password"] }
