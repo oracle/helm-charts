@@ -229,11 +229,10 @@ Then pass the name of the secret as `secretName` when `credentials` are required
 
 ### 3.1 Install the SOA Suite Helm Chart
 
-1. Update helm dependencies
+1. Add this repository to your list of known repositories
 
     ```bash
-    cd soa-on-k8s
-    helm dependency update 
+    helm repo add oracle https://oracle.github.io/helm-charts --force-update
     ```
 
 1. To install the chart, you need to specify a few variables, including:
@@ -250,7 +249,7 @@ Then pass the name of the secret as `secretName` when `credentials` are required
     - The `oracledb.url`: connection URL for the Oracle database to use to create the RCU schema.
 
     ```bash
-    helm install soainfra . \
+    helm install soainfra oracle/soa-suite \
         --namespace soans \
         --set 'imagePullSecrets[0].name=image-secret' \
         --set domain.domainName=soainfra \
@@ -295,7 +294,7 @@ Upon installation, the RCU schema will be created and the domain files will be c
 ### Stopping the domain
 
 ```bash
-helm upgrade soainfra . -n soans \
+helm upgrade soainfra oracle/soa-suite -n soans \
     --reuse-values \
     --set domain.enabled=false
 ```
