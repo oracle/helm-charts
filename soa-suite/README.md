@@ -161,7 +161,7 @@ Note: We create the SOA Suite deployment namespace prior to installing the other
     Note: We're passing the namespace `soans` for the SOA Suite domain in `domainNamespaces`. If the namespace is created later, you will need to update the weblogic-operator chart after the namespace is created with:
 
     ```bash
-    helm update weblogic-operator \
+    helm upgrade weblogic-operator \
     weblogic-operator/weblogic-operator \
     --reuse-values \
     --version 3.1.4 \
@@ -203,7 +203,7 @@ Note: We create the SOA Suite deployment namespace prior to installing the other
     Note: Here again we pass the `soans` namespace created earlier to the ingress controller chart. If the namespace is created later, update the traefik chart with:
 
     ```bash
-    helm update traefik-operator \
+    helm upgrade traefik-operator \
     traefik/traefik \
     --namespace traefik \
     --reuse-values \
