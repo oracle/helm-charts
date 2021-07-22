@@ -109,7 +109,7 @@ This SOA Suite Helm chart has dependencies on the WebLogic Kubernetes Operator, 
 
 - The Traefik ingress controller chart needs to be installed prior to installing this chart. It is installed once and used for any domain deployed.
 
-- The Oracle Database should preferably be provisioned separately. When deploying on Oracle Cloud Infrastructure, it is recommended to deploy through the database service. A test database can also be provisioned within your cluster as a pod as part of this chart by enabling the flag `oracledb.enabled` and providing the necessary parameters.
+- The Oracle Database should preferably be provisioned separately. When deploying on Oracle Cloud Infrastructure, it is recommended to deploy through the database service. A test database can also be provisioned within your cluster as a pod as part of this chart by enabling the flag `oracledb.provision` and providing the necessary parameters.
 
 See the Terraform script to deploy these dependencies in an automated fasion. Below are the manual steps.
 
@@ -200,6 +200,8 @@ Note: We create the SOA Suite deployment namespace prior to installing the other
     --wait
     ```
 
+    Note: Use the additional option `--set service.type=NodePort` when deploying on a cluster without a load balancer service.
+
     Note: Here again we pass the `soans` namespace created earlier to the ingress controller chart. If the namespace is created later, update the traefik chart with:
 
     ```bash
@@ -280,7 +282,6 @@ If you wish to provision the database as part of the chart (not suitable for pro
         --set domain.rcuSchema.credentials.password="<RCU_password>" \
         --set domain.storage.nfs.server=<FILE_STORAGE_IP> \
         --set domain.storage.path=<FILE_STROAGE_MOUNT_PATH> \
-        --set oracledb.provision=false \
         --set oracledb.sysPassword="<SYS_PASSWORD>" \
         --set oracledb.provision=true \
         --wait  \
@@ -308,5 +309,5 @@ For the files to be removed properly, the domain must be shut down first as per 
 Once the domain was shut down, delete the chart with:
 
 ```bash
-helm delete soainfra
+helm delete soainfra -n soans
 ```
