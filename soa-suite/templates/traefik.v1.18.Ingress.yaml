@@ -1,6 +1,6 @@
 # Copyright (c) 2020, 2021, Oracle and/or its affiliates.
 # Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
-{{- if and (eq .Values.ingress.type "traefik") (eq .Values.kubernetesVersion "1.18") }}
+{{- if and (eq .Values.ingress.type "traefik") (eq (semver "1.19" | (semver .Values.kubernetesVersion).Compare) -1) }}
 apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:

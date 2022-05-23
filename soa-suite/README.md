@@ -189,8 +189,9 @@ Note: We create the SOA Suite deployment namespace prior to installing the other
     ```bash
     helm install traefik-operator \
     traefik/traefik \
+    --version 10.19.5 \
     --namespace traefik \
-    --set image.tag=2.2.8 \
+    --set image.tag=2.6.6 \
     --set ports.traefik.expose=true \
     --set ports.web.exposedPort=30305 \
     --set ports.web.nodePort=30305 \
