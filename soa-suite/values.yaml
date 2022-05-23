@@ -8,7 +8,7 @@
 nameOverride: ""
 fullnameOverride: ""
 
-kubernetesVersion: "1.18"
+kubernetesVersion: "1.23"
 
 image:
   repository: container-registry.oracle.com/middleware/soasuite

@@ -1,1 +1,21 @@
 1. Get the application URL by running these commands:
+
+get the public IP adress:
+
+kubectl get service -n traefik 
+
+Check SOA pods are running and ready:
+
+kubectl get pods -n <soa_namespace>
+
+NAME                READY   STATUS    RESTARTS   AGE    IP          NODE          NOMINATED NODE   READINESS GATES
+    mysoa-adminserver   1/1     Running   0          179m   10.1.1.9    10.0.10.211   <none>           <none>
+    mysoa-osb-server1   1/1     Running   0          172m   10.1.1.10   10.0.10.211   <none>           <none>
+    mysoa-osb-server2   1/1     Running   0          172m   10.1.1.12   10.0.10.211   <none>           <none>
+    mysoa-soa-server1   1/1     Running   0          172m   10.1.1.11   10.0.10.211   <none>           <none>
+    mysoa-soa-server2   1/1     Running   0          172m   10.1.0.6    10.0.10.16    <none>           <none>
+
+Browse to console:
+
+http://*PUBLIC_IP*:30305/console
+

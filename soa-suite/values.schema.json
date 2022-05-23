@@ -58,8 +58,7 @@
   },
   "properties": {
     "kubernetesVersion": {
-      "type": "string",
-      "enum": ["1.18", "1.19"]
+      "type": "string"
     },
     "image": {
       "type": "object",
