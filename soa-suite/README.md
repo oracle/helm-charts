@@ -105,7 +105,7 @@ You can also provision a File System manually with the instructions below:
 
 This SOA Suite Helm chart has dependencies on the WebLogic Kubernetes Operator, an ingress controller (Traefik) and Oracle Database.
 
-- The WebLogic Kubernetes Operator chart needs to be installed prior to installing this chart. It is installed once to deploy any number of WebLogic or SOA domains.
+- The WebLogic Kubernetes Operator chart needs to be installed prior to installing this chart. It is installed once to deploy any number of WebLogic or SOA domains. This version requires WebLogic Operator v3.4.0 or greater.
 
 - The Traefik ingress controller chart needs to be installed prior to installing this chart. It is installed once and used for any domain deployed.
 
@@ -150,9 +150,9 @@ Note: We create the SOA Suite deployment namespace prior to installing the other
     ```bash
     helm install weblogic-operator \
     weblogic-operator/weblogic-operator \
-    --version 3.1.4 \
+    --version 3.4.0 \
     --namespace weblogic-operator \
-    --set image=ghcr.io/oracle/weblogic-kubernetes-operator:3.1.4 \
+    --set image=ghcr.io/oracle/weblogic-kubernetes-operator:3.4.0 \
     --set serviceAccount=weblogic-operator \
     --set "domainNamespaces={soans}" \
     --wait
@@ -164,7 +164,7 @@ Note: We create the SOA Suite deployment namespace prior to installing the other
     helm upgrade weblogic-operator \
     weblogic-operator/weblogic-operator \
     --reuse-values \
-    --version 3.1.4 \
+    --version 3.4.0 \
     --namespace weblogic-operator \
     --set "domainNamespaces={soans}" \
     --wait

@@ -1,4 +1,4 @@
-# Copyright (c) 2020, 2021, Oracle and/or its affiliates.
+# Copyright (c) 2020, 2022, Oracle and/or its affiliates.
 # Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
 
 # Default values for soa-suite.
@@ -45,8 +45,8 @@ securityContext: {}
 domain:
   # Set this flag to false to remove the domain before tear-down (default true)
   enabled: true
-  # supported types: fmw, soa, osb, soaosb, soaess, soaessosb)
-  type: soaessosb
+  # supported types: fmw, soa, osb, soaosb)
+  type: soaosb
 
   # domainName should have no space, _ or -
   domainName: soainfra

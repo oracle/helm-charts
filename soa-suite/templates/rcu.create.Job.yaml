@@ -1,4 +1,4 @@
-# Copyright (c) 2020, 2021, Oracle and/or its affiliates.
+# Copyright (c) 2020, 2022, Oracle and/or its affiliates.
 # Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
 #
 # This is a template for RCU Pod
@@ -82,13 +82,13 @@ spec:
           - name: extVariables
             value: ""
           {{- end }}
-          {{- if or (eq .Values.domain.type "soa") (eq .Values.domain.type "soaosb") (eq .Values.domain.type "osb") }}
+          {{- if (eq .Values.domain.type "osb") }}
           - name: extComponents
             value: "-component SOAINFRA"
           - name: extVariables
             value: "-variables SOA_PROFILE_TYPE=$(schemaProfileType),HEALTHCARE_INTEGRATION=NO"
           {{- end }}
-          {{- if or (eq .Values.domain.type "soaess") (eq .Values.domain.type "soaessosb") }}
+          {{- if or (eq .Values.domain.type "soaosb") (eq .Values.domain.type "soa")  }}
           - name: extComponents
             value: "-component SOAINFRA -component ESS"
           - name: extVariables

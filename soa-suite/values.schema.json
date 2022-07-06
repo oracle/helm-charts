@@ -111,7 +111,7 @@
         },
         "type": {
           "type": "string",
-          "enum": ["soa", "osb", "soaosb", "soaess", "soaessosb"]
+          "enum": ["soa", "osb", "soaosb"]
         },
         "domainName": {
           "type": "string",

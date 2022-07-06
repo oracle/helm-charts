@@ -1,4 +1,4 @@
-# Copyright (c) 2020, 2021, Oracle and/or its affiliates.
+# Copyright (c) 2020, 2022, Oracle and/or its affiliates.
 # Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
 
 apiVersion: batch/v1
@@ -31,7 +31,7 @@ spec:
       initContainers:
         - name: fix-pvc-owner
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          command: ["sh", "-c", "chown 1000:1000 /u01/oracle/user_projects/. && find /u01/oracle/user_projects/. -maxdepth 1 ! -name '.snapshot' ! -name '.' -print0 | xargs -r -0 chown -R 1000:1000"]
+          command: ["sh", "-c", "chown 1000:0 /u01/oracle/user_projects/. && find /u01/oracle/user_projects/. -maxdepth 1 ! -name '.snapshot' ! -name '.' -print0 | xargs -r -0 chown -R 1000:0"]
           volumeMounts:
           - name: soa-infra-domain-storage-volume
             mountPath: {{ .Values.domain.rootDir }}

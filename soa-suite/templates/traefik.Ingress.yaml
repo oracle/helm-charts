@@ -1,4 +1,4 @@
-# Copyright (c) 2020, 2021, Oracle and/or its affiliates.
+# Copyright (c) 2020, 2022, Oracle and/or its affiliates.
 # Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
 {{- if and (eq .Values.ingress.type "traefik") (ge (semver "1.19" | (semver .Values.kubernetesVersion).Compare) 0) }}
 apiVersion: networking.k8s.io/v1
@@ -54,7 +54,7 @@ spec:
             port:
               number: {{ .Values.domain.soaCluster.managedServers.listenPort  }}
         {{- end }}
-{{- if or (eq .Values.domain.type "soa") (eq .Values.domain.type "soaosb") (eq .Values.domain.type "soaess") (eq .Values.domain.type "soaessosb")}}
+{{- if or (eq .Values.domain.type "soa") (eq .Values.domain.type "soaosb") }}
       - path: /soa-infra
         pathType: Prefix
         backend:
@@ -77,7 +77,7 @@ spec:
             port: 
               number: {{ .Values.domain.soaCluster.managedServers.listenPort }}
 {{- end }}
-{{- if or (eq .Values.domain.type "osb") (eq .Values.domain.type "soaosb") (eq .Values.domain.type "soaessosb") }}
+{{- if or (eq .Values.domain.type "osb") (eq .Values.domain.type "soaosb") }}
       - path: /servicebus
         pathType: Prefix
         backend:
@@ -107,7 +107,7 @@ spec:
             port:
               number: {{ .Values.domain.admin.listenPort }}
 {{- end }}
-{{- if or (eq .Values.domain.type "soaess") (eq .Values.domain.type "soaessosb")}}
+{{- if or (eq .Values.domain.type "soa") (eq .Values.domain.type "soaosb")}}
       - path: /ess
         pathType: Prefix
         backend:
