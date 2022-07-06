@@ -1,4 +1,4 @@
-# Copyright (c) 2020, 2021, Oracle and/or its affiliates.
+# Copyright (c) 2020, 2022, Oracle and/or its affiliates.
 # Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
 #
 # This is an example of how to define a Domain resource.
@@ -116,7 +116,7 @@ spec:
   # clusters is used to configure the desired behavior for starting member servers of a cluster.  
   # If you use this entry, then the rules will be applied to ALL servers that are members of the named clusters.
   clusters:
-  {{ if or (eq .Values.domain.type "soa") (eq .Values.domain.type "soaosb") (eq .Values.domain.type "soaess") (eq .Values.domain.type "soaessosb") }}
+  {{ if or (eq .Values.domain.type "soa") (eq .Values.domain.type "soaosb") }}
   - clusterName: {{ .Values.domain.soaCluster.name }}
     # IF SOA domain this is added
     serverService:
@@ -127,11 +127,11 @@ spec:
       env:
       # This parameter can be used to pass in new system properties, use the space delimiter to append multiple values.
       # Do not change the below value, only append new values to it.
-      {{- if or (eq .Values.domain.type "soa") (eq .Values.domain.type "soaess") }}
+      {{- if (eq .Values.domain.type "soa") }}
       - name: K8S_REFCONF_OVERRIDES
         value: "-Doracle.domain.tracking.resiliency.MemoryMetricEnabled=false "
       {{- end }}
-      {{- if or (eq .Values.domain.type "soaosb") (eq .Values.domain.type "soaessosb") }}
+      {{- if or (eq .Values.domain.type "soaosb") (eq .Values.domain.type "osb") }}
       - name: K8S_REFCONF_OVERRIDES
         value: "-Doracle.sb.tracking.resiliency.MemoryMetricEnabled=false -Doracle.domain.tracking.resiliency.MemoryMetricEnabled=false "
       {{- end }}
@@ -152,7 +152,7 @@ spec:
     # The number of managed servers to start for unlisted clusters
     replicas: {{ .Values.domain.soaCluster.managedServers.count }}
   {{- end }}
-  {{ if or (eq .Values.domain.type "osb") (eq .Values.domain.type "soaosb") (eq .Values.domain.type "soaessosb") }}
+  {{ if or (eq .Values.domain.type "osb") (eq .Values.domain.type "soaosb") }}
   - clusterName: {{ .Values.domain.osbCluster.name }}
     # IF SOA domain this is added
     serverService:
@@ -167,7 +167,7 @@ spec:
       - name: K8S_REFCONF_OVERRIDES
         value: "-Doracle.sb.tracking.resiliency.MemoryMetricEnabled=false"
       {{- end }}
-      {{- if or (eq .Values.domain.type "soaosb") (eq .Values.domain.type "soaessosb") }}
+      {{- if (eq .Values.domain.type "soaosb") }}
       - name: K8S_REFCONF_OVERRIDES
         value: "-Doracle.sb.tracking.resiliency.MemoryMetricEnabled=false -Doracle.domain.tracking.resiliency.MemoryMetricEnabled=false "
       {{- end }}

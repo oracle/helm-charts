@@ -1,4 +1,4 @@
-# Copyright (c) 2020, 2021, Oracle and/or its affiliates.
+# Copyright (c) 2020, 2022, Oracle and/or its affiliates.
 # Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
 {{- if and (eq .Values.ingress.type "traefik") (eq (semver "1.19" | (semver .Values.kubernetesVersion).Compare) -1) }}
 apiVersion: networking.k8s.io/v1beta1
@@ -40,7 +40,7 @@ spec:
           serviceName: '{{ .Values.domain.domainName }}-cluster-{{ .Values.domain.soaCluster.name | lower | replace "_" "-" }}'
           servicePort: {{ .Values.domain.soaCluster.managedServers.listenPort  }}
         {{- end }}
-{{- if or (eq .Values.domain.type "soa") (eq .Values.domain.type "soaosb") (eq .Values.domain.type "soaess") (eq .Values.domain.type "soaessosb")}}
+{{- if or (eq .Values.domain.type "soa") (eq .Values.domain.type "soaosb") }}
       - path: /soa-infra
         backend:
           serviceName: '{{ .Values.domain.domainName }}-cluster-{{ .Values.domain.soaCluster.name | lower | replace "_" "-" }}'
@@ -54,7 +54,7 @@ spec:
           serviceName: '{{ .Values.domain.domainName }}-cluster-{{ .Values.domain.soaCluster.name | lower | replace "_" "-" }}'
           servicePort: {{ .Values.domain.soaCluster.managedServers.listenPort }}
 {{- end }}
-{{- if or (eq .Values.domain.type "osb") (eq .Values.domain.type "soaosb") (eq .Values.domain.type "soaessosb") }}
+{{- if or (eq .Values.domain.type "osb") (eq .Values.domain.type "soaosb") (eq .Values.domain.type "soa") }}
       - path: /servicebus
         backend:
           serviceName: '{{ .Values.domain.domainName }}-{{ .Values.domain.admin.name | lower | replace "_" "-" }}'
@@ -72,7 +72,7 @@ spec:
           serviceName: '{{ .Values.domain.domainName }}-{{ .Values.domain.admin.name | lower | replace "_" "-" }}'
           servicePort: {{ .Values.domain.admin.listenPort }}
 {{- end }}
-{{- if or (eq .Values.domain.type "soaess") (eq .Values.domain.type "soaessosb")}}
+{{- if or (eq .Values.domain.type "soa") (eq .Values.domain.type "soaosb")}}
       - path: /ess
         backend:
           serviceName: '{{ .Values.domain.domainName }}-cluster-{{ .Values.domain.soaCluster.name | lower | replace "_" "-" }}'
