@@ -25,6 +25,6 @@ helm install \
   --set imagePullSecrets=`<your-secret-file-for-container-registry-access>` \
   --set image.repository=`<tuxedows_svr image location in container registry>`  \
   --set TuxExternalIP="${EXT_IP}" \
-  tuxedo-ws-helm-install tuxedo/charts/tuxedo-ws
+  tuxedo-ws-install tuxedo/charts/tuxedo-ws
 ```
 

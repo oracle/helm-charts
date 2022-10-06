@@ -7,5 +7,5 @@ The `LoadBalancer` service must be running before deploying Tuxedo WS server usi
 To create a `LoadBalancer` using this Helm chart, run:
 
 ```shell
-helm install loadbal-helm-install tuxedo/charts/loadbal
+helm install loadbal-install tuxedo/charts/loadbal
 ```
