@@ -4,8 +4,8 @@ This repository contains the Helm charts for deploying the Oracle Tuxedo suite o
 
 ## Available Helm charts
 
-* [Tuxedo WS server](./charts/tuxedo-ws) : Sample Tuxedo WS (workstation) SSL server.
-* [Load Balancer service](./charts/loadbal) : Service to provide an external IP for Tuxedo WS server, if required.
+* [Tuxedo Workstation SSL server](./charts/tuxedo-ws): Sample Tuxedo Workstation (WS) SSL server.
+* [Load Balancer service](./charts/loadbal): Service to provide an external IP for a Tuxedo WS server, if required.
 
 ## License
 

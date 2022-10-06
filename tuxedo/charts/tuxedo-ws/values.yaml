@@ -8,7 +8,7 @@
 replicaCount: 1
 
 image:
-  repository: iad.ocir.io/paasdevblockchain/oracle/tuxedows_svr
+  repository:
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
