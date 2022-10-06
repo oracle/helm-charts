@@ -1,14 +1,14 @@
-# Oracle Tuxedo WS (workstation) SSL server 
+# Oracle Tuxedo WS (workstation) SSL server
 
 This helm chart creates the Tuxedo WS (workstation) SSL server with two services: `BASICWS` and `TOUPPER`
 
 ## Prerequisites
 
-  1. Build the `tuxedows_svr` container image using the [Oracle Tuxedo WS App](https://github.com/oracle/docker-images/OracleTuxedo/core/samples/ws_ssl_svr/). 
+  1. Build the `tuxedows_svr` container image using the [Oracle Tuxedo WS App](https://github.com/oracle/docker-images/OracleTuxedo/core/samples/ws_ssl_svr/).
 
   2. Upload the container image to a private container registry. This location will be used in the `helm install` step later in this procedure.
 
-  3. If your client will be connecting over an external IP connection, install the `loadbal` helm chart to obtain the external IP address as follows: 
+  3. If your client will be connecting over an external IP connection, install the `loadbal` helm chart to obtain the external IP address as follows:
      ```shell
      EXT_IP=$(kubectl get service --namespace default tuxedo-loadbal-svc --output jsonpath='{.status.loadBalancer.ingress[0].ip}')
      ```

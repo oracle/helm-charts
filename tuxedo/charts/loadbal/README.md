@@ -1,4 +1,4 @@
-# Oracle Tuxedo LoadBalancer service 
+# Oracle Tuxedo LoadBalancer service
 
 This service provides client access to the Tuxedo Workstation (WS) service from an external IP address.
 
