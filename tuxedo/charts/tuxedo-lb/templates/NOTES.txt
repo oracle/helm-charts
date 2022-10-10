@@ -5,9 +5,9 @@
    EXT_IP=$(kubectl get service --namespace default tuxedo-lb-svc --output jsonpath='{.status.loadBalancer.ingress[0].ip}')
    echo EXT_IP=$EXT_IP
 
-2. Use this IP for tuxedows server installation as below:
+2. Use this IP for tuxedo-ws server installation as below:
 
    helm install \
         --set imagePullSecrets="<your-secret-file-for-oracle-container-registry-access>" \
         --set TuxExternalIP="${EXT_IP}" \
-    tuxedo-ws-helm-install oracle/tuxedo-ws
+    tuxedo-ws-install oracle/tuxedo-ws
