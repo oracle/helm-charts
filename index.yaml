@@ -3,17 +3,17 @@ entries:
   java-amc:
   - apiVersion: v2
     appVersion: "2.20"
-    created: "2022-07-06T08:41:00.194309-07:00"
+    created: "2022-10-11T09:39:49.052773+11:00"
     description: A Helm chart for Containerized Advanced Management Console
     digest: 76a04c5832bb718e1dd1f91762cd484033821f21646861b771e323735101eb5b
     name: java-amc
     urls:
-    - charts/java-amc-1.0.0.tgz
+    - https://oracle.github.io/helm-charts/charts/java-amc-1.0.0.tgz
     version: 1.0.0
   soa-suite:
   - apiVersion: v2
     appVersion: 12.2.1.4
-    created: "2022-07-06T08:41:00.201522-07:00"
+    created: "2022-10-11T09:39:49.057894+11:00"
     dependencies:
     - condition: oracledb.provision
       name: oracledb
@@ -24,11 +24,11 @@ entries:
     name: soa-suite
     type: application
     urls:
-    - charts/soa-suite-0.3.0.tgz
+    - https://oracle.github.io/helm-charts/charts/soa-suite-0.3.0.tgz
     version: 0.3.0
   - apiVersion: v2
     appVersion: 12.2.1.4
-    created: "2022-07-06T08:41:00.198884-07:00"
+    created: "2022-10-11T09:39:49.05568+11:00"
     dependencies:
     - condition: oracledb.provision
       name: oracledb
@@ -39,11 +39,11 @@ entries:
     name: soa-suite
     type: application
     urls:
-    - charts/soa-suite-0.2.0.tgz
+    - https://oracle.github.io/helm-charts/charts/soa-suite-0.2.0.tgz
     version: 0.2.0
   - apiVersion: v2
     appVersion: 12.2.1.4
-    created: "2022-07-06T08:41:00.196471-07:00"
+    created: "2022-10-11T09:39:49.054213+11:00"
     dependencies:
     - condition: oracledb.provision
       name: oracledb
@@ -54,6 +54,28 @@ entries:
     name: soa-suite
     type: application
     urls:
-    - charts/soa-suite-0.1.0.tgz
+    - https://oracle.github.io/helm-charts/charts/soa-suite-0.1.0.tgz
     version: 0.1.0
-generated: "2022-07-06T08:41:00.192677-07:00"
+  tuxedo-lb:
+  - apiVersion: v2
+    appVersion: "1.0"
+    created: "2022-10-11T09:39:49.058676+11:00"
+    description: A Helm chart for Kubernetes
+    digest: 252b45745207c35748db3fa9f5b9a7f96137bae72ec544e6870fc61508de92d9
+    name: tuxedo-lb
+    type: application
+    urls:
+    - https://oracle.github.io/helm-charts/charts/tuxedo-lb-0.1.0.tgz
+    version: 0.1.0
+  tuxedo-ws:
+  - apiVersion: v2
+    appVersion: "1.0"
+    created: "2022-10-11T09:39:49.059085+11:00"
+    description: A Helm chart for Kubernetes
+    digest: c0a04f37e5f8919fe604c922248fd44afea07eb8c901db47f29d251a55c6e829
+    name: tuxedo-ws
+    type: application
+    urls:
+    - https://oracle.github.io/helm-charts/charts/tuxedo-ws-0.1.0.tgz
+    version: 0.1.0
+generated: "2022-10-11T09:39:49.051867+11:00"

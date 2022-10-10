@@ -7,16 +7,17 @@ products.
 
 * Java [Advanced Management Console](./java-amc) (AMC)
 * [Oracle SOA Suite](./soa-suite/README.md)
+* [Oracle Tuxedo](./tuxedo/README.md)
 
 ## Usage
 
-Add the repository to your list of known repositories with:
+To add this repository to your list of known repositories, run:
 
 ```bash
 helm repo add oracle https://oracle.github.io/helm-charts
 ```
 
-Install charts with:
+To install a Helm chart, run:
 
 ```bash
 helm install <deployment_name> oracle/<chart_name> \
