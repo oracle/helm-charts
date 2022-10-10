@@ -2,7 +2,7 @@
 # Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
 
 apiVersion: v2
-name: loadbal
+name: tuxedo-lb
 description: A Helm chart for Kubernetes
 
 # A chart can be either an 'application' or a 'library' chart.

@@ -3,7 +3,7 @@ entries:
   java-amc:
   - apiVersion: v2
     appVersion: "2.20"
-    created: "2022-07-06T08:41:00.194309-07:00"
+    created: "2022-10-11T05:53:38.583799+11:00"
     description: A Helm chart for Containerized Advanced Management Console
     digest: 76a04c5832bb718e1dd1f91762cd484033821f21646861b771e323735101eb5b
     name: java-amc
@@ -13,7 +13,7 @@ entries:
   soa-suite:
   - apiVersion: v2
     appVersion: 12.2.1.4
-    created: "2022-07-06T08:41:00.201522-07:00"
+    created: "2022-10-11T05:53:38.58832+11:00"
     dependencies:
     - condition: oracledb.provision
       name: oracledb
@@ -28,7 +28,7 @@ entries:
     version: 0.3.0
   - apiVersion: v2
     appVersion: 12.2.1.4
-    created: "2022-07-06T08:41:00.198884-07:00"
+    created: "2022-10-11T05:53:38.587027+11:00"
     dependencies:
     - condition: oracledb.provision
       name: oracledb
@@ -43,7 +43,7 @@ entries:
     version: 0.2.0
   - apiVersion: v2
     appVersion: 12.2.1.4
-    created: "2022-07-06T08:41:00.196471-07:00"
+    created: "2022-10-11T05:53:38.585499+11:00"
     dependencies:
     - condition: oracledb.provision
       name: oracledb
@@ -56,4 +56,26 @@ entries:
     urls:
     - charts/soa-suite-0.1.0.tgz
     version: 0.1.0
-generated: "2022-07-06T08:41:00.192677-07:00"
+  tuxedo-lb:
+  - apiVersion: v2
+    appVersion: "1.0"
+    created: "2022-10-11T05:53:38.589978+11:00"
+    description: A Helm chart for Kubernetes
+    digest: 4b3282d7d0d20b429eaaa3f092bf89491db42adba31ba392a01fed23b64faba3
+    name: tuxedo-lb
+    type: application
+    urls:
+    - charts/tuxedo-lb-0.1.0.tgz
+    version: 0.1.0
+  tuxedo-ws:
+  - apiVersion: v2
+    appVersion: "1.0"
+    created: "2022-10-11T05:53:38.590367+11:00"
+    description: A Helm chart for Kubernetes
+    digest: c0a04f37e5f8919fe604c922248fd44afea07eb8c901db47f29d251a55c6e829
+    name: tuxedo-ws
+    type: application
+    urls:
+    - charts/tuxedo-ws-0.1.0.tgz
+    version: 0.1.0
+generated: "2022-10-11T05:53:38.582593+11:00"
