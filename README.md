@@ -10,7 +10,7 @@ products.
 
 ## Usage
 
-Add the repository to your lisrt of known repositories with:
+Add the repository to your list of known repositories with:
 
 ```bash
 helm repo add oracle https://oracle.github.io/helm-charts
