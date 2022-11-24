@@ -32,7 +32,7 @@ curl -X POST -H Content-type:application/json http://127.0.0.1:8080/INQUIRY -d '
 ```
 
 The expected output to the above `INQUIRY` HTTP request is
-```
+```json
     "ACCOUNT_ID":   10000,
     "FORMNAM":      "CBALANCE",
     "SBALANCE":     "$1456.00"
@@ -44,7 +44,7 @@ If clients external to the Kubernetes cluster should be able to access the banka
 
 * Install Istio `demo` profile using the [Istio Installation Guides](https://istio.io/latest/docs/setup/install/). This should result in the istio-ingressgateway service being installed, along with a valid EXTERNAL-IP value, as shown in the following sample listing:
 
-```
+```shell
 kubectl get svc -n istio-system
 
     NAME                   TYPE           CLUSTER-IP      EXTERNAL-IP 
@@ -55,15 +55,15 @@ kubectl get svc -n istio-system
 
 ```shell
 BANKAPP_SITE="bankapp.oracle.com"     # can be any website name (but not IP address) of your choice
-	
+
 # create root certificate and private key
 openssl req -x509 -sha256 -nodes -days 3650 -newkey rsa:2048 -subj '/O=Oracle Inc/CN=does-not-matter' -keyout root-ca.private.key -out root-ca.crt
-	
+
 # create bankapp certificate and private key
 openssl req -out bankapp.csr -newkey rsa:2048 -nodes -keyout bankapp.private.key -subj "/CN=${BANKAPP_SITE}/O=Bankapp organization"
-	
+
 openssl x509 -req -sha256 -days 3650 -CA root-ca.crt -CAkey root-ca.private.key -set_serial 0 -in bankapp.csr -out bankapp.crt
-	
+
 # create kubernetes SSL certificate secret for istio ingress gateway
 kubectl create -n istio-system secret tls bankapp-credential --key=bankapp.private.key --cert=bankapp.crt
 
@@ -104,7 +104,7 @@ curl -X POST -H "Content-type:application/json" \
 ```
 
 The expected output to the above `INQUIRY` HTTP request is
-```
+```json
     "ACCOUNT_ID":   10000,
     "FORMNAM":      "CBALANCE",
     "SBALANCE":     "$1456.00"
