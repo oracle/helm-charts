@@ -1,0 +1,64 @@
+{{- if .Values.EnableIngress -}}
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: bankapp-gw
+spec:
+  selector:
+    istio: ingressgateway    ## use istio default ingress gateway
+  servers:
+  - port:
+      number: 443
+      name: https
+      protocol: HTTPS
+    tls: 
+      mode: SIMPLE
+      credentialName: {{ .Values.IngressTLSSecretName }}
+    hosts:
+    - {{ .Values.IngressTLSHosts }}
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: bankapp-vs
+spec:
+  hosts:
+  - {{ .Values.IngressTLSHosts | quote }}
+  gateways:
+  - bankapp-gw
+  http:
+  - match:
+    - uri:
+        exact: /WITHDRAWAL
+    - uri:
+        exact: /DEPOSIT
+    - uri:
+        exact: /TRANSFER
+    - uri:
+        exact: /INQUIRY
+    - uri:
+        exact: /CLOSE_ACCT
+    - uri:
+        exact: /OPEN_ACCT
+    - uri:
+        exact: /BR_ADD
+    - uri:
+        exact: /TLR_ADD
+    - uri:
+        exact: /ABAL
+    - uri:
+        exact: /TBAL
+    - uri:
+        exact: /ABAL_BID
+    - uri:
+        exact: /TBAL_BID
+    - uri:
+        exact: /ABALC_BID
+    - uri:
+        exact: /TBALC_BID
+    route:
+    - destination:
+        host: tuxedo-bankapp-svc
+        port:
+          number: 80
+{{- end }}
