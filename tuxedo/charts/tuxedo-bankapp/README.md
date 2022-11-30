@@ -1,10 +1,10 @@
-# Oracle Tuxedo `bankapp` Sample Application
+# Oracle Tuxedo Service Architecture Leveraging Tuxedo (SALT) `bankapp` Sample Application
 
 This Helm chart creates an Oracle Tuxedo  sample `bankapp` application with services sch as `INQUIRY`, `TRANSFER`, `DEPOSIT`, `WITHDRAWAL` and other similar services.
 
 ## Prerequisites
 
-* Build a `tuxedo-bankapp` container image using the [Oracle Tuxedo bankapp image](../../../../docker-images/Archive/OracleTuxedo/salt/samples/bankapp)
+* Build a `tuxedo-bankapp` container image using the [Oracle Tuxedo bankapp image](https://github.com/oracle/docker-images/tree/main/OracleTuxedo/salt/samples/bankapp)
 
 * Push the `tuxedo-bankapp` image that you built in the preceding step to a private container registry and note down its location. This location will be used in the `helm install` step later in this procedure.
 
@@ -54,10 +54,10 @@ kubectl get svc -n istio-system
 * Create the SSL certificates by running the following steps:
 
 ```shell
-BANKAPP_SITE="bankapp.oracle.com"     # can be any website name (but not IP address) of your choice
+BANKAPP_SITE="bankapp.example.com"     # can be any website name (but not IP address) of your choice
 
 # create root certificate and private key
-openssl req -x509 -sha256 -nodes -days 3650 -newkey rsa:2048 -subj '/O=Oracle Inc/CN=does-not-matter' -keyout root-ca.private.key -out root-ca.crt
+openssl req -x509 -sha256 -nodes -days 3650 -newkey rsa:2048 -subj '/O=Example Inc/CN=does-not-matter' -keyout root-ca.private.key -out root-ca.crt
 
 # create bankapp certificate and private key
 openssl req -out bankapp.csr -newkey rsa:2048 -nodes -keyout bankapp.private.key -subj "/CN=${BANKAPP_SITE}/O=Bankapp organization"
@@ -77,7 +77,7 @@ helm install \
   --set image.repository=`<tuxedo-bankapp image location in container registry>`  \
   --set EnableIngress=true \
   --set IngressTLSSecretName=`<SSL certificate secret created earlier, e.g. bankapp-credential>` \
-  --set IngressTLSHosts=`<$BANKAPP_SITE used earlier, e.g. bankapp.oracle.com>`  \
+  --set IngressTLSHosts=`<$BANKAPP_SITE used earlier, e.g. bankapp.example.com>`  \
   tuxedo-bankapp-install tuxedo/charts/tuxedo-bankapp
 ```
 
@@ -94,7 +94,7 @@ Go to the host from where you want to access the `bankapp` HTTP application.
 Copy the root CA certificate `root-ca.crt`, which was created in one of preceding steps, to the location from you will run the below `curl` command.
 
 ```shell
-export BANKAPP_SITE=<same value that was used in one of the preceding steps. e.g. bankapp.oracle.com.>
+export BANKAPP_SITE=<same value that was used in one of the preceding steps. e.g. bankapp.example.com.>
 
 curl -X POST -H "Content-type:application/json" \
   -HHost:${BANKAPP_SITE} \
