@@ -1,6 +1,10 @@
 # Oracle Tuxedo Service Architecture Leveraging Tuxedo (SALT) `bankapp` Sample Application
 
-This Helm chart creates an Oracle Tuxedo  sample `bankapp` application with services sch as `INQUIRY`, `TRANSFER`, `DEPOSIT`, `WITHDRAWAL` and other similar services.
+This Helm chart creates a sample Oracle Tuxedo `bankapp` application with multiple services including `INQUIRY`, `TRANSFER`, `DEPOSIT` and `WITHDRAWAL`.
+
+## Disclaimer
+
+This Helm chart is provided for educational purposes only and should only be deployed internally. It should not be deployed to any production or externally accessible environments.
 
 ## Prerequisites
 
@@ -105,7 +109,9 @@ curl -X POST -H "Content-type:application/json" \
 
 The expected output to the above `INQUIRY` HTTP request is
 ```json
-    "ACCOUNT_ID":   10000,
-    "FORMNAM":      "CBALANCE",
-    "SBALANCE":     "$1456.00"
+    {
+            "ACCOUNT_ID":   10000,
+            "FORMNAM":      "CBALANCE",
+            "SBALANCE":     "$1456.00"
+    }
 ```
