@@ -3,7 +3,7 @@
   export INGRESS_HOST=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].ip}') 
   export SECURE_INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="https")].port}')
   copy root-ca.crt created earlier to the location from where the below curl command will be run.
-  export BANKAPP_SITE=<same value as what was used in one of the earlier steps. e.g. bankapp.oracle.com.>
+  export BANKAPP_SITE=<same value as what was used in one of the earlier steps. e.g. bankapp.example.com.>
   curl -X POST -H "Content-type:application/json" \
     -HHost:${BANKAPP_SITE} \
     --resolve "${BANKAPP_SITE}:$SECURE_INGRESS_PORT:$INGRESS_HOST" \

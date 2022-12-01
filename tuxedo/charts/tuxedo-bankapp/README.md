@@ -14,7 +14,7 @@ This Helm chart is provided for educational purposes only and should only be dep
 
 ## Using the Tuxedo `bankapp` Sample Application without Istio Ingress and SSL
 
-* To run the `Tuxedo bankapp sample application`, install this helm chart by running the following command:
+* To run the Tuxedo `bankapp` sample application, install this Helm chart by running the following command:
 
 ```shell
 helm install \
@@ -37,16 +37,18 @@ curl -X POST -H Content-type:application/json http://127.0.0.1:8080/INQUIRY -d '
 
 The expected output to the above `INQUIRY` HTTP request is
 ```json
-    "ACCOUNT_ID":   10000,
-    "FORMNAM":      "CBALANCE",
-    "SBALANCE":     "$1456.00"
+{
+        "ACCOUNT_ID":   10000,
+        "FORMNAM":      "CBALANCE",
+        "SBALANCE":     "$1456.00"
+}
 ```
 
 ## Using the Tuxedo `bankapp` Sample Application with Istio Ingress and SSL
 
-If clients external to the Kubernetes cluster should be able to access the bankapp, then you can install Istio Ingress to obtain an external IP along with SSL support.
+Istio Ingress can be installed to provide an external IP and SSL support which will allow you to connect to the `bankapp` application from clients external to the Kubernetes cluster.
 
-* Install Istio `demo` profile using the [Istio Installation Guides](https://istio.io/latest/docs/setup/install/). This should result in the istio-ingressgateway service being installed, along with a valid EXTERNAL-IP value, as shown in the following sample listing:
+* Install Istio `demo` profile using the [Istio installation guide](https://istio.io/latest/docs/setup/install/). The `demo` profile will install an `istio-ingressgateway` service and output an `EXTERNAL-IP` value, as shown in the following sample listing:
 
 ```shell
 kubectl get svc -n istio-system
@@ -73,7 +75,7 @@ kubectl create -n istio-system secret tls bankapp-credential --key=bankapp.priva
 
 ```
 
-* To run the `Tuxedo bankapp sample application`, install this helm chart by running the following command:
+* To run the Tuxedo `bankapp` sample application, install this Helm chart by running the following command:
 
 ```shell
 helm install \
@@ -109,9 +111,9 @@ curl -X POST -H "Content-type:application/json" \
 
 The expected output to the above `INQUIRY` HTTP request is
 ```json
-    {
-            "ACCOUNT_ID":   10000,
-            "FORMNAM":      "CBALANCE",
-            "SBALANCE":     "$1456.00"
-    }
+{
+        "ACCOUNT_ID":   10000,
+        "FORMNAM":      "CBALANCE",
+        "SBALANCE":     "$1456.00"
+}
 ```
