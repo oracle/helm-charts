@@ -8,9 +8,9 @@ This Helm chart is provided for educational purposes only and should only be dep
 
 ## Prerequisites
 
-* Build a `tuxedo-bankapp` container image using the [Oracle Tuxedo bankapp image](https://github.com/oracle/docker-images/tree/main/OracleTuxedo/salt/samples/bankapp)
+* Build a Tuxedo `bankapp` container image using the [Oracle Tuxedo `bankapp` image](https://github.com/oracle/docker-images/tree/main/OracleTuxedo/salt/samples/bankapp)
 
-* Push the `tuxedo-bankapp` image that you built in the preceding step to a private container registry and note down its location. This location will be used in the `helm install` step later in this procedure.
+* Push the Tuxedo `bankapp` image that you built in the preceding step to a private container registry and note down its location. This location will be used in the `helm install` step later in this procedure.
 
 ## Using the Tuxedo `bankapp` Sample Application without Istio Ingress and SSL
 
@@ -20,7 +20,7 @@ This Helm chart is provided for educational purposes only and should only be dep
 helm install \
   --set imagePullSecrets=`<your-secret-file-for-container-registry-access>` \
   --set image.repository=`<tuxedo-bankapp image location in container registry>`  \
-  tuxedo-bankapp-install tuxedo/charts/tuxedo-bankapp
+  tuxedo-bankapp-install oracle/tuxedo-bankapp
 ```
 
 * To test the application, run the following commands to query the INQUIRY HTTP service:
@@ -84,7 +84,7 @@ helm install \
   --set EnableIngress=true \
   --set IngressTLSSecretName=`<SSL certificate secret created earlier, e.g. bankapp-credential>` \
   --set IngressTLSHosts=`<$BANKAPP_SITE used earlier, e.g. bankapp.example.com>`  \
-  tuxedo-bankapp-install tuxedo/charts/tuxedo-bankapp
+  tuxedo-bankapp-install oracle/tuxedo-bankapp
 ```
 
 * To test the application, run the following commands to query the INQUIRY HTTP service:
