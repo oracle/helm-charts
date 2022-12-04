@@ -3,7 +3,7 @@ entries:
   java-amc:
   - apiVersion: v2
     appVersion: "2.20"
-    created: "2022-10-11T09:39:49.052773+11:00"
+    created: "2022-12-01T22:40:46.241573214Z"
     description: A Helm chart for Containerized Advanced Management Console
     digest: 76a04c5832bb718e1dd1f91762cd484033821f21646861b771e323735101eb5b
     name: java-amc
@@ -13,7 +13,7 @@ entries:
   soa-suite:
   - apiVersion: v2
     appVersion: 12.2.1.4
-    created: "2022-10-11T09:39:49.057894+11:00"
+    created: "2022-12-01T22:40:46.257090179Z"
     dependencies:
     - condition: oracledb.provision
       name: oracledb
@@ -28,7 +28,7 @@ entries:
     version: 0.3.0
   - apiVersion: v2
     appVersion: 12.2.1.4
-    created: "2022-10-11T09:39:49.05568+11:00"
+    created: "2022-12-01T22:40:46.253058656Z"
     dependencies:
     - condition: oracledb.provision
       name: oracledb
@@ -43,7 +43,7 @@ entries:
     version: 0.2.0
   - apiVersion: v2
     appVersion: 12.2.1.4
-    created: "2022-10-11T09:39:49.054213+11:00"
+    created: "2022-12-01T22:40:46.248907745Z"
     dependencies:
     - condition: oracledb.provision
       name: oracledb
@@ -56,10 +56,21 @@ entries:
     urls:
     - https://oracle.github.io/helm-charts/charts/soa-suite-0.1.0.tgz
     version: 0.1.0
+  tuxedo-bankapp:
+  - apiVersion: v2
+    appVersion: "1.0"
+    created: "2022-12-01T22:40:46.257923324Z"
+    description: A Helm chart for Kubernetes
+    digest: c316452d4f9bb8bbcb64546a7e088e5ebc9119cd9afb5694947632d9b6f96735
+    name: tuxedo-bankapp
+    type: application
+    urls:
+    - https://oracle.github.io/helm-charts/charts/tuxedo-bankapp-0.1.0.tgz
+    version: 0.1.0
   tuxedo-lb:
   - apiVersion: v2
     appVersion: "1.0"
-    created: "2022-10-11T09:39:49.058676+11:00"
+    created: "2022-12-01T22:40:46.258669424Z"
     description: A Helm chart for Kubernetes
     digest: 252b45745207c35748db3fa9f5b9a7f96137bae72ec544e6870fc61508de92d9
     name: tuxedo-lb
@@ -70,7 +81,7 @@ entries:
   tuxedo-ws:
   - apiVersion: v2
     appVersion: "1.0"
-    created: "2022-10-11T09:39:49.059085+11:00"
+    created: "2022-12-01T22:40:46.259496213Z"
     description: A Helm chart for Kubernetes
     digest: c0a04f37e5f8919fe604c922248fd44afea07eb8c901db47f29d251a55c6e829
     name: tuxedo-ws
@@ -78,4 +89,4 @@ entries:
     urls:
     - https://oracle.github.io/helm-charts/charts/tuxedo-ws-0.1.0.tgz
     version: 0.1.0
-generated: "2022-10-11T09:39:49.051867+11:00"
+generated: "2022-12-01T22:40:46.239802454Z"

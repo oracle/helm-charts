@@ -1,0 +1,17 @@
+1. Get the application URL and test it by running these commands:
+{{ if .Values.EnableIngress }}
+  export INGRESS_HOST=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].ip}') 
+  export SECURE_INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="https")].port}')
+  copy root-ca.crt created earlier to the location from where the below curl command will be run.
+  export BANKAPP_SITE=<same value as what was used in one of the earlier steps. e.g. bankapp.example.com.>
+  curl -X POST -H "Content-type:application/json" \
+    -HHost:${BANKAPP_SITE} \
+    --resolve "${BANKAPP_SITE}:$SECURE_INGRESS_PORT:$INGRESS_HOST" \
+    --cacert root-ca.crt \
+    "https://${BANKAPP_SITE}:$SECURE_INGRESS_PORT/INQUIRY" -d '{"ACCOUNT_ID":10000}'
+{{- else if contains "ClusterIP" .Values.service.type }}
+  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app=tuxedo-bankapp" -o jsonpath="{.items[0].metadata.name}")
+  export CONTAINER_PORT=$(kubectl get pod --namespace {{ .Release.Namespace }} $POD_NAME -o jsonpath="{.spec.containers[0].ports[0].containerPort}")
+  kubectl --namespace {{ .Release.Namespace }} port-forward $POD_NAME 8080:$CONTAINER_PORT
+  curl -X POST -H Content-type:application/json http://127.0.0.1:8080/INQUIRY -d '{"ACCOUNT_ID":10000}'
+{{- end }}
