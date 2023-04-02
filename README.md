@@ -9,7 +9,7 @@ products.
 * [Oracle SOA Suite](./soa-suite/README.md)
 * [Oracle Tuxedo](./tuxedo/README.md)
 
-## Usage
+## Installation
 
 To add this repository to your list of known repositories, run:
 
@@ -30,9 +30,13 @@ This project welcomes contributions from the community. Before submitting a pull
 request, please [review our contribution guide](./CONTRIBUTING.md) which includes
 information on how to responsibly report a security vulnerability to Oracle.
 
+## Security
+
+Please consult the [security guide](./SECURITY.md) for our responsible security vulnerability disclosure process
+
 ## License
 
-Copyright (c) 2022 Oracle and/or its affiliates.
+Copyright (c) 2022, 2023 Oracle and/or its affiliates.
 
 Released under the Universal Permissive License v1.0 as shown at
 <https://oss.oracle.com/licenses/upl/>.
